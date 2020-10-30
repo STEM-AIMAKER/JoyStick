@@ -5,6 +5,7 @@ namespace JoyStick
     let kPin: DigitalPin = null
     let xPin: AnalogPin = null
     let yPin: AnalogPin = null
+    let onKPressedEventHandler: (pressed: boolean) => void;
     
     //% blockId=readYValue block="Read JoyStick Y Value"
     export function readYValue(): number {
@@ -15,6 +16,23 @@ namespace JoyStick
     export function readXValue(): number {
         return pins.analogReadPin(xPin)
     }
+
+    /**
+     * Registers code to run when k buton pressed.
+     */
+    //% blockId=onShakeEvent block="On K button pressed event" 
+    export function onShakeEvent(cb: (pressed: boolean) => void) {
+        onKPressedEventHandler = cb;
+    }
+
+    pins.onPulsed(kPin, PulseValue.High, function () {
+            if( onKPressedEventHandler )
+                onKPressedEventHandler(true)
+        })
+    pins.onPulsed(kPin, PulseValue.Low, function () {
+        if( onKPressedEventHandler )
+            onKPressedEventHandler(false)
+    })
 
     //% blockId=isKPressed block="Is JoyStick K pressed"
     export function isKPressed(): boolean {

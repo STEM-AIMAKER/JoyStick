@@ -1,7 +1,7 @@
 //% color=190 weight=100 icon="\uf1ec" block="Hanshin STEM JoyStick"
 namespace JoyStick 
 {
-    // color=190 weight=100 icon="\uf1ec" block="Hanshin STEM JoyStick"
+    // color=190 weight=100 icon="\uf1ec" block="HANSHIN: joystick"
     let kPin: DigitalPin = null
     let xPin: AnalogPin = null
     let yPin: AnalogPin = null

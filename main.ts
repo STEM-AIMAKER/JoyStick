@@ -5,7 +5,8 @@ namespace JoyStick
     let kPin: DigitalPin = null
     let xPin: AnalogPin = null
     let yPin: AnalogPin = null
-    let onKPressedEventHandler: (pressed: boolean) => void;
+    let onKPressedEventHandlerTrue: () => void;
+    let onKPressedEventHandlerFalse: () => void;
     
     //% blockId=readYValue block="Read JoyStick Y Value"
     export function readYValue(): number {
@@ -17,29 +18,35 @@ namespace JoyStick
         return pins.analogReadPin(xPin)
     }
 
-    /**
-     * Registers code to run when k buton pressed.
-     */
-    //% blockId=onShakeEvent block="On K button pressed event" 
-    export function onShakeEvent(cb: (pressed: boolean) => void) {
-        onKPressedEventHandler = cb;
-    }
-
-    pins.onPulsed(kPin, PulseValue.High, function () {
-            if( onKPressedEventHandler )
-                onKPressedEventHandler(true)
-        })
-    pins.onPulsed(kPin, PulseValue.Low, function () {
-        if( onKPressedEventHandler )
-            onKPressedEventHandler(false)
-    })
-
     //% blockId=isKPressed block="Is JoyStick K pressed"
     export function isKPressed(): boolean {
-        if( 1 === pins.digitalReadPin(kPin) ) {
+        if( 0 === pins.digitalReadPin(kPin) ) {
             return true
         }
         return false;
+    }
+    
+    /**
+     * Registers code to run when k buton pressed.
+     */
+    //% blockId=onShakeEvent block="On K button at pin=%k pressed=%pressed event" 
+    export function onShakeEvent(k: DigitalPin,pressed: boolean, cb: () => void) {
+        kPin = k
+        if( pressed )
+            onKPressedEventHandlerTrue = cb
+        else
+            onKPressedEventHandlerFalse = cb
+        
+        pins.setPull(kPin, PinPullMode.PullNone)
+        
+        pins.onPulsed(kPin, PulseValue.High, function () {
+            if( onKPressedEventHandler )
+                onKPressedEventHandler(false)
+        })
+        pins.onPulsed(kPin, PulseValue.Low, function () {
+            if( onKPressedEventHandler )
+                onKPressedEventHandler(true)
+        })
     }
 
     //% blockId=connectJoyStick block="Connect JoyStick at K=%k|X=%x|y=%y"
@@ -47,6 +54,6 @@ namespace JoyStick
         kPin = k
         xPin = x
         yPin = y
-        pins.setPull(kPin, PinPullMode.PullNone)
+        
     }
 }

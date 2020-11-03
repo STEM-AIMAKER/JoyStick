@@ -40,12 +40,12 @@ namespace JoyStick
         pins.setPull(kPin, PinPullMode.PullNone)
         
         pins.onPulsed(kPin, PulseValue.High, function () {
-            if( onKPressedEventHandlerFalse )
-                onKPressedEventHandlerFalse()
-        })
-        pins.onPulsed(kPin, PulseValue.Low, function () {
             if( onKPressedEventHandlerTrue )
                 onKPressedEventHandlerTrue()
+        })
+        pins.onPulsed(kPin, PulseValue.Low, function () {
+            if( onKPressedEventHandlerFalse )
+                onKPressedEventHandlerFalse()
         })
     }
 
